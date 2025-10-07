@@ -9,7 +9,7 @@ public class PlayerConsume : MonoBehaviour
         {
             return;
         }
-        int value = other.gameObject.GetComponent<Consumable>().GetValue;
+        int value = other.gameObject.GetComponent<Consumable>().MicroplasticValue;
         GameManager.Instance.AddMicroplastics(value);
         Destroy(other.gameObject);
     }

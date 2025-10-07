@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour, IMovement
+public class PlayerVerticalMovement : MonoBehaviour, IMovement
 {
     [SerializeField] float _maxSpeed;
     [SerializeField] float _minSpeed;
@@ -10,10 +10,14 @@ public class PlayerMovement : MonoBehaviour, IMovement
     [SerializeField] bool isMoving;
     [SerializeField] Vector2 mDirection;
 
+    public Vector2 GetDirection {
+        get {return mDirection;}
+        private set {mDirection = value;}
+    }
+
     void Awake()
     {
         _rb = gameObject.GetComponent<Rigidbody>();
-
     }
 
     void Start()
@@ -38,7 +42,7 @@ public class PlayerMovement : MonoBehaviour, IMovement
     void FixedUpdate()
     {
 
-        Vector3 direction = new Vector3(mDirection.x, 0f, mDirection.y);
+        Vector3 direction = new Vector3(0f, mDirection.y, mDirection.x);
         transform.Translate(direction * _currentSpeed * Time.deltaTime);
     }
 }
