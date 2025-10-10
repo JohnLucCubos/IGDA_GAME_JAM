@@ -1,80 +1,103 @@
 using UnityEngine;
 using System.Collections.Generic;
-
+using System.Linq;
 public class SwarmManager : MonoBehaviour
 {
-    public GameObject Player;
-    public GameObject AnchovyFab;
-    public List<GameObject> SwarmMembers;
-    public float moveSpeed = 5f;
-    private bool memberAdded = false;
+    private static SwarmManager _instance;
+    public static SwarmManager Instance { get { return _instance; } }
 
+    [SerializeField] const int SPAWN_VALUE = 5;
+    [SerializeField] int consumeableMicroplastics;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] GameObject anchovyPrefab;
+    [SerializeField] Transform spawnPoint;
+
+    [SerializeField] List<GameObject> spawnedAnchovies = new List<GameObject>();
+    public int getAnchovySwarmSize
     {
-        SwarmMembers.Add(Player);
+        get { return spawnedAnchovies.Count; }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
-        // DELETE -- FOR TESTING ONLY ========================================
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
-        Vector3 movement = new Vector3(moveHorizontal, moveVertical, 0f);
-
-        if(movement.magnitude > 1f)
+        this.gameObject.tag = "SwarmManager";
+        if (_instance != null && _instance != this)
         {
-            movement.Normalize();
+            Destroy(this.gameObject);
         }
-
-        Player.transform.Translate(movement * moveSpeed * Time.deltaTime);
-
-        // ===================================================================
-        // Spacebar to add Anchovy for testing purposes
-        if(Input.GetKeyDown(KeyCode.Space))
+        else
         {
-            AddSwarmMember();
+            _instance = this;
         }
+        DontDestroyOnLoad(this.gameObject);
 
-        // New Member handling
-        if(memberAdded)
+        consumeableMicroplastics = 0;
+    }
+
+    public void AddMicroplastics(int value)
+    {
+        consumeableMicroplastics += value;
+
+        ConsumeMicroplastics(value);
+    }
+
+    public void RemoveMicroplastics(int value)
+    {
+        consumeableMicroplastics -= value;
+    }
+
+    public void ConsumeMicroplastics(int value)
+    {
+        while (consumeableMicroplastics >= SPAWN_VALUE)
         {
-            Debug.Log("New Member");
-            if (SwarmMembers.Count > 0)
-            {
-
-                // temporary test behavior. 
-                foreach(GameObject member in SwarmMembers)
-                {
-                    Debug.Log(member.name);
-                }
-            }
-
-            // Finish handling new member responsibitilies.
-            memberAdded = false;
+            SpawnAnchovy();
+            RemoveMicroplastics(SPAWN_VALUE);
+        }
+        // we don't want negatives
+        if (consumeableMicroplastics < 0)
+        {
+            consumeableMicroplastics = 0;
         }
     }
 
-    void AddSwarmMember()
+    private void SpawnAnchovy()
     {
-        // Locate the player position
-        Transform playerPosition = GameObject.Find("Player").transform;
+        // Current logic spawns
 
-        // Create offset from character position to spawn member at
-        Vector3 spawnPostion = new Vector3(2, 0, 1);
-        
-        if (playerPosition != null)
+        // sets the anchovy spawning range
+        float yOffset = Random.Range(-5f, 1f);
+        float zOffset = Random.Range(-5f, 5f);
+        // creates a new spawning location
+        Vector3 spawnPosition = new Vector3(
+            0,
+            spawnPoint.position.y + yOffset,
+            spawnPoint.position.z + zOffset
+        );
+        // spawns the anchovy
+        GameObject anchovy = Instantiate(anchovyPrefab, spawnPosition, spawnPoint.rotation);
+        // sets spawnPoint as the parent
+        anchovy.transform.SetParent(spawnPoint);
+        spawnedAnchovies.Add(anchovy);
+
+        Debug.Log("Anchovy Spawned: " + spawnedAnchovies.Count);
+    }
+
+    public void DeleteAnchovy(GameObject defeatedAnchovy)
+    {
+        int selected = spawnedAnchovies.IndexOf(defeatedAnchovy);
+        if (selected == -1)
         {
-            // Create new instance of anchovy
-            GameObject newMember = Instantiate(AnchovyFab, (playerPosition.position - spawnPostion), playerPosition.rotation);
-            
-            // Add new member to swarm list.
-            SwarmMembers.Add(newMember);
-
-            // Acts as signal to handle newMember logic in update loop.
-            memberAdded = true;
+            return;
         }
+        if(spawnedAnchovies.Count == 0)
+        {
+            // call player lost function here
+            return;
+        }
+
+        GameObject anchovy = spawnedAnchovies[selected];
+
+        Destroy(anchovy);
+        spawnedAnchovies.RemoveAt(selected);
     }
 }

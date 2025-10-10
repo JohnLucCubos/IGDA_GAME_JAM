@@ -9,7 +9,7 @@ public class PlayerHorizontalMovement : MonoBehaviour, IMovement
     [SerializeField] Rigidbody _rb;
     [SerializeField] bool isMoving;
     [SerializeField] Vector2 mDirection;
-
+    // ! DEPRICATED
     void Awake()
     {
         _rb = gameObject.GetComponent<Rigidbody>();

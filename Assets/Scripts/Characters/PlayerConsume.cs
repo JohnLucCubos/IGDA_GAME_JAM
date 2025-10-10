@@ -10,7 +10,10 @@ public class PlayerConsume : MonoBehaviour
             return;
         }
         int value = other.gameObject.GetComponent<Consumable>().MicroplasticValue;
+
         GameManager.Instance.AddMicroplastics(value);
+        SwarmManager.Instance.AddMicroplastics(value);
+
         Destroy(other.gameObject);
     }
 }
