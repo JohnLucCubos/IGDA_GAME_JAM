@@ -12,6 +12,7 @@ public class PlayerVerticalMovement : MonoBehaviour, IMovement
 
     [SerializeField] Transform characterModel;
 
+    [SerializeField] float maxHeight;
     public Vector2 GetDirection {
         get {return mDirection;}
         private set {mDirection = value;}
@@ -43,19 +44,20 @@ public class PlayerVerticalMovement : MonoBehaviour, IMovement
     {
 
         Vector3 direction = new Vector3(0f, mDirection.y, mDirection.x);
-
         transform.Translate(direction * _currentSpeed * Time.deltaTime);
+        LockHeight();
     }
 
     void Rotate(Vector3 direction)
     {
-        if(direction.z > 0)
-        {
-            characterModel.transform.rotation = Quaternion.Euler(0, 180f, 0);
-        }
-        else
-        {
-            characterModel.transform.rotation = Quaternion.identity;
-        }
+
+        characterModel.transform.rotation = Quaternion.LookRotation(-direction);
+
+    }
+    void LockHeight()
+    {
+        Vector3 currentPosition = transform.position;
+        currentPosition.y = Mathf.Clamp(currentPosition.y, -Mathf.Infinity, maxHeight);
+        transform.position = currentPosition;
     }
 }
