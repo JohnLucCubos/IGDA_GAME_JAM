@@ -41,4 +41,5 @@ public class PlayerHorizontalMovement : MonoBehaviour, IMovement
         Vector3 direction = new Vector3(mDirection.x, 0f, mDirection.y);
         transform.Translate(direction * _currentSpeed * Time.deltaTime);
     }
+    public void Dash(){}
 }

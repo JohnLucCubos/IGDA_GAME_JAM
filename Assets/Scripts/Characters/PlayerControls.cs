@@ -14,6 +14,8 @@ public class PlayerControls : MonoBehaviour
     {
         playerControls.Player.Move.performed += ctx => movement.Move(ctx.ReadValue<Vector2>());
         playerControls.Player.Move.canceled += ctx => movement.Move(Vector2.zero);
+
+        playerControls.Player.Dash.performed += ctx => movement.Dash();
     }
     void OnEnable() => playerControls.Player.Enable();
     void OnDisable() => playerControls.Player.Disable();

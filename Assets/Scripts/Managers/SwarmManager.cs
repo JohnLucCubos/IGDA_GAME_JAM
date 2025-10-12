@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 public class SwarmManager : MonoBehaviour
 {
     private static SwarmManager _instance;
@@ -11,6 +12,9 @@ public class SwarmManager : MonoBehaviour
 
     [SerializeField] GameObject anchovyPrefab;
     [SerializeField] Transform spawnPoint;
+
+    [SerializeField] TextMeshProUGUI displayAnchovies;
+    [SerializeField] TextMeshProUGUI displayUniqueFish;
 
     [SerializeField] List<GameObject> spawnedAnchovies = new List<GameObject>();
     public int getAnchovySwarmSize
@@ -79,7 +83,7 @@ public class SwarmManager : MonoBehaviour
         anchovy.transform.SetParent(spawnPoint);
         spawnedAnchovies.Add(anchovy);
 
-        Debug.Log("Anchovy Spawned: " + spawnedAnchovies.Count);
+        displayAnchovies.text = spawnedAnchovies.Count.ToString();
     }
 
     public void DeleteAnchovy(GameObject defeatedAnchovy)
@@ -99,5 +103,7 @@ public class SwarmManager : MonoBehaviour
 
         Destroy(anchovy);
         spawnedAnchovies.RemoveAt(selected);
+
+        displayAnchovies.text = spawnedAnchovies.Count.ToString();
     }
 }

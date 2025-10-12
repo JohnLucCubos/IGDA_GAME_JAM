@@ -24,4 +24,5 @@ public class EntityMovement : MonoBehaviour, IMovement
     {
         Move(Vector2.zero);
     }
+    public void Dash(){}
 }

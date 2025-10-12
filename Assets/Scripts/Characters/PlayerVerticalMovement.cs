@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerVerticalMovement : MonoBehaviour, IMovement
@@ -6,13 +7,17 @@ public class PlayerVerticalMovement : MonoBehaviour, IMovement
     [SerializeField] float _minSpeed;
     [SerializeField] float _currentSpeed;
 
+    [SerializeField] float dashSpeed;
+
     [SerializeField] Rigidbody _rb;
     [SerializeField] bool isMoving;
+    [SerializeField] bool hasDashed;
     [SerializeField] Vector2 mDirection;
 
     [SerializeField] Transform characterModel;
+    [SerializeField] int dashDuration;
+    [SerializeField] int dashCooldown;
 
-    [SerializeField] float maxHeight;
     public Vector2 GetDirection {
         get {return mDirection;}
         private set {mDirection = value;}
@@ -39,25 +44,37 @@ public class PlayerVerticalMovement : MonoBehaviour, IMovement
             Rotate(rotation);
         }
     }
-
+    public void Dash()
+    {
+        if (hasDashed)
+        {
+            return;
+        }
+        Vector3 direction = new Vector3(0f, mDirection.y, mDirection.x);
+        _rb.AddForce(direction * dashSpeed, ForceMode.Impulse);
+        StartCoroutine(Cooldown(dashDuration, dashCooldown));
+    }
     void FixedUpdate()
     {
 
         Vector3 direction = new Vector3(0f, mDirection.y, mDirection.x);
         transform.Translate(direction * _currentSpeed * Time.deltaTime);
-        LockHeight();
     }
 
     void Rotate(Vector3 direction)
     {
-
         characterModel.transform.rotation = Quaternion.LookRotation(-direction);
+    }
 
-    }
-    void LockHeight()
+    IEnumerator Cooldown(int duration, int timer)
     {
-        Vector3 currentPosition = transform.position;
-        currentPosition.y = Mathf.Clamp(currentPosition.y, -Mathf.Infinity, maxHeight);
-        transform.position = currentPosition;
+        hasDashed = true;
+        // dictates how far the player can dash
+        yield return new WaitForSeconds(duration);
+        _rb.linearVelocity = Vector3.zero;
+        // dictates how long before player can dash again
+        yield return new WaitForSeconds(timer);
+        hasDashed = false;
     }
+
 }
