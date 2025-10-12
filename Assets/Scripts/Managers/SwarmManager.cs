@@ -69,13 +69,13 @@ public class SwarmManager : MonoBehaviour
         // Current logic spawns
 
         // sets the anchovy spawning range
-        float yOffset = Random.Range(-5f, 1f);
+        float yOffset = Random.Range(-2.5f, 2.5f);
         float zOffset = Random.Range(-5f, 5f);
         // creates a new spawning location
         Vector3 spawnPosition = new Vector3(
             0,
-            spawnPoint.position.y + yOffset,
-            spawnPoint.position.z + zOffset
+            yOffset,
+            zOffset
         );
         // spawns the anchovy
         GameObject anchovy = Instantiate(anchovyPrefab, spawnPosition, spawnPoint.rotation);

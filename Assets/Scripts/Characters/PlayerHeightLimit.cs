@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerHeightLimit : MonoBehaviour
 {
-    [SerializeField] float maxHeight;
+    [SerializeField] float maxHeight; // = -3
     void LockHeight()
     {
         Vector3 currentPosition = transform.position;
