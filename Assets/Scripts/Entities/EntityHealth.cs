@@ -7,6 +7,7 @@ public class EntityHealth : MonoBehaviour
     [SerializeField] int currentHealth;
     [SerializeField] float immunityDuration;
     [SerializeField] bool wasDamaged;
+    public int getCurrentHealth {get{ return currentHealth; }}
 
     private void Start()
     {

@@ -17,6 +17,11 @@ public class SwarmManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI displayUniqueFish;
 
     [SerializeField] List<GameObject> spawnedAnchovies = new List<GameObject>();
+    [SerializeField] float setYDistribution;
+    [SerializeField] float setZDistribution;
+
+    [SerializeField] GameObject playerUICanvas;
+    [SerializeField] GameObject playerDefeatCanvas;
     public int getAnchovySwarmSize
     {
         get { return spawnedAnchovies.Count; }
@@ -36,6 +41,8 @@ public class SwarmManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
 
         consumeableMicroplastics = 0;
+        playerUICanvas.SetActive(true);
+        playerDefeatCanvas.SetActive(false);
     }
 
     public void AddMicroplastics(int value)
@@ -69,13 +76,13 @@ public class SwarmManager : MonoBehaviour
         // Current logic spawns
 
         // sets the anchovy spawning range
-        float yOffset = Random.Range(-2.5f, 2.5f);
-        float zOffset = Random.Range(-5f, 5f);
+        float yOffset = Random.Range(-setYDistribution, setYDistribution);
+        float zOffset = Random.Range(-setZDistribution, setZDistribution);
         // creates a new spawning location
         Vector3 spawnPosition = new Vector3(
             0,
-            yOffset,
-            zOffset
+            spawnPoint.position.y + yOffset,
+            spawnPoint.position.z + zOffset
         );
         // spawns the anchovy
         GameObject anchovy = Instantiate(anchovyPrefab, spawnPosition, spawnPoint.rotation);
@@ -96,6 +103,8 @@ public class SwarmManager : MonoBehaviour
         if(spawnedAnchovies.Count == 0)
         {
             // call player lost function here
+            playerUICanvas.SetActive(false);
+            playerDefeatCanvas.SetActive(true);
             return;
         }
 

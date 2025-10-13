@@ -3,8 +3,8 @@ using UnityEngine;
 public class PlayerConsume : MonoBehaviour
 {
     [SerializeField]
-    private void OnTriggerEnter(Collider other)
-    {
+    private void OnCollisionEnter(Collision other) {
+    
         if(other.gameObject.tag != "Consumable")
         {
             return;
